@@ -1,0 +1,223 @@
+<?php
+$page_css = "home.css";
+require_once 'includes/functions.php';
+include 'includes/header.php';
+
+$categories = getAllCategories();
+
+// Fetch all top‑up products (category_id = 4)
+$allTopups = getProductsByCategory(4);  // returns each product with 'first_image'
+
+// Split into FreeFire and PUBG based on name (adjust detection logic as needed)
+$freefire = array_filter($allTopups, function($p) {
+    return stripos($p['name'], 'FreeFire') !== false;
+});
+$pubg = array_filter($allTopups, function($p) {
+    return stripos($p['name'], 'PUBG') !== false;
+});
+$freefire = array_values($freefire);
+$pubg = array_values($pubg);
+
+// Only first 2 of each for visible grid
+$visibleProducts = array_merge(array_slice($freefire, 0, 2), array_slice($pubg, 0, 2));
+?>
+
+<!-- Hero Section (unchanged) -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Mobiles, parts &amp; repairs — <br>done right.</h1>
+    <p>Trusted service for phones, components and vapes. Browse our selection, then message us on WhatsApp to confirm availability.</p>
+    <div class="hero-cta">
+      <a href="mobiles.php" class="btn btn-primary">Shop Mobiles</a>
+      <a href="contact.php" class="btn btn-secondary">Visit Store</a>
+    </div>
+  </div>
+</section>
+
+<!-- Category Grid (unchanged) -->
+<section class="section category-grid-section">
+  <h2 class="section-title">Browse Categories</h2>
+  <div class="category-grid">
+    <a href="mobiles.php" class="category-card">
+      <div class="category-img"><img src="assets/images/browse_products/browse_mobile.png" alt="Mobiles" loading="lazy"></div>
+      <h3>Mobiles</h3><p>New & pre‑owned phones</p>
+    </a>
+    <a href="parts.php" class="category-card">
+      <div class="category-img"><img src="assets/images/browse_products/browse_parts.png" alt="Parts" loading="lazy"></div>
+      <h3>Parts</h3><p>Screens, batteries, more</p>
+    </a>
+    <a href="vapes.php" class="category-card">
+      <div class="category-img"><img src="assets/images/browse_products/browse_vape.png" alt="Vapes" loading="lazy"></div>
+      <h3>Vapes</h3><p>Pods, mods &amp; accessories</p>
+    </a>
+    <a href="topups.php" class="category-card">
+      <div class="category-img"><img src="assets/images/browse_products/browse_topup.png" alt="Top‑ups" loading="lazy"></div>
+      <h3>Top‑ups</h3><p>Free Fire, PUBG, COC, Steam</p>
+    </a>
+  </div>
+</section>
+
+<!-- ==================== NEW TOP‑UP SECTION ==================== -->
+<section id="topups-section" class="section">
+  <h2 class="section-title">🎮 Game Top‑upssss</h2>
+
+  <!-- Filter Buttons -->
+  <div class="topup-filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="freefire">FreeFire</button>
+    <button class="filter-btn" data-filter="pubg">PUBG</button>
+  </div>
+
+  <!-- Visible Grid (only 2 FreeFire + 2 PUBG) -->
+  <div class="product-grid visible-grid" id="visibleGrid">
+    <?php foreach ($visibleProducts as $prod): ?>
+      <article class="product-card" data-category="<?= stripos($prod['name'], 'FreeFire') !== false ? 'freefire' : 'pubg' ?>" data-product-id="<?= $prod['id'] ?>">
+        <div class="product-img">
+          <img src="<?= productImageUrl($prod['first_image']) ?>" alt="<?= htmlspecialchars($prod['name']) ?>" loading="lazy">
+          <span class="badge badge-in">In Stock</span>
+        </div>
+        <div class="product-info">
+          <h3><?= htmlspecialchars($prod['name']) ?></h3>
+          <p class="price"><?= formatPrice($prod['price']) ?></p>
+        </div>
+      </article>
+    <?php endforeach; ?>
+  </div>
+
+  <!-- Hidden Horizontal Scroll (all top‑ups) -->
+  <div class="product-grid horizontal-scroll" id="horizontalGrid">
+    <?php foreach ($allTopups as $prod): ?>
+      <article class="product-card" data-category="<?= stripos($prod['name'], 'FreeFire') !== false ? 'freefire' : 'pubg' ?>" data-product-id="<?= $prod['id'] ?>">
+        <div class="product-img">
+          <img src="<?= productImageUrl($prod['first_image']) ?>" alt="<?= htmlspecialchars($prod['name']) ?>" loading="lazy">
+          <span class="badge badge-in">In Stock</span>
+        </div>
+        <div class="product-info">
+          <h3><?= htmlspecialchars($prod['name']) ?></h3>
+          <p class="price"><?= formatPrice($prod['price']) ?></p>
+        </div>
+      </article>
+    <?php endforeach; ?>
+  </div>
+
+  <div class="view-all">
+    <button id="viewMoreBtn" class="btn btn-outline">View More →</button>
+  </div>
+</section>
+
+<!-- ==================== MODAL (product details + Esewa + WhatsApp) ==================== -->
+<div id="productModal" class="modal-overlay" style="display: none;">
+  <div class="modal">
+    <button class="modal-close">&times;</button>
+    <div class="modal-gallery">
+      <img id="modalImage" src="" alt="Product">
+    </div>
+    <div class="modal-body">
+      <h2 id="modalTitle"></h2>
+      <p id="modalPrice" class="price"></p>
+      <p id="modalDesc">After purchase, please send your FreeFire/PUBG <strong>User ID (UID)</strong> along with <strong>Esewa payment screenshot</strong> to our WhatsApp. Your diamonds/UC will be credited within 24 hours.</p>
+      
+      <div class="esewa-info">
+        <p><strong>Esewa Number:</strong> 9847956550</p>
+        <img src="assets/images/esewa_qr.png" alt="Esewa QR Code" id="esewaQr" style="width: 150px; height: auto; margin-top: 10px;">
+        <p class="note">Scan to pay or send to above number</p>
+      </div>
+
+      <a href="#" id="whatsappBtn" class="btn btn-primary" target="_blank">📱 Contact for Purchase</a>
+    </div>
+  </div>
+</div>
+
+<!-- Why Choose Us (unchanged) -->
+<section class="section about">
+  <h2 class="section-title">Why Choose Us?</h2>
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-img"><img src="assets/images/browse_products/why_trusted_since.png" alt="Trusted Since 2015" loading="lazy"></div>
+      <h3>Trusted Since 2015</h3><p>10+ years of honest service in Deukhuri.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-img"><img src="assets/images/browse_products/why_genuine_parts.png" alt="Genuine Parts" loading="lazy"></div>
+      <h3>Genuine Parts</h3><p>100% original spares with warranty.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-img"><img src="assets/images/browse_products/why_best_price.png" alt="Best Prices" loading="lazy"></div>
+      <h3>Best Prices</h3><p>Affordable rates on mobiles & repairs.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-img"><img src="assets/images/browse_products/why_flash.png" alt="Instant Top-ups" loading="lazy"></div>
+      <h3>Instant Top‑ups</h3><p>Game credits delivered in minutes.</p>
+    </div>
+  </div>
+</section>
+
+<?php include 'includes/footer.php'; ?>
+
+<script>
+// Filter visible grid (only affects the visible products in #visibleGrid)
+const filterBtns = document.querySelectorAll('.filter-btn');
+const visibleCards = document.querySelectorAll('#visibleGrid .product-card');
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const filter = btn.dataset.filter;
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    visibleCards.forEach(card => {
+      const category = card.dataset.category;
+      if (filter === 'all' || category === filter) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+});
+
+// Toggle horizontal scroll (View More / View Less)
+const viewMoreBtn = document.getElementById('viewMoreBtn');
+const horizontalGrid = document.getElementById('horizontalGrid');
+if (viewMoreBtn && horizontalGrid) {
+  viewMoreBtn.addEventListener('click', () => {
+    horizontalGrid.classList.toggle('show');
+    if (horizontalGrid.classList.contains('show')) {
+      viewMoreBtn.textContent = 'View Less ↑';
+      horizontalGrid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      viewMoreBtn.textContent = 'View More →';
+    }
+  });
+}
+
+// Modal logic
+const modal = document.getElementById('productModal');
+const modalImg = document.getElementById('modalImage');
+const modalTitle = document.getElementById('modalTitle');
+const modalPrice = document.getElementById('modalPrice');
+const whatsappBtn = document.getElementById('whatsappBtn');
+let currentProduct = {};
+
+function openModal(id, img, name, price) {
+  modalImg.src = img;
+  modalTitle.innerText = name;
+  modalPrice.innerText = price;
+  currentProduct = { id, name, price };
+  modal.style.display = 'flex';
+  const msg = `Hello, I want to purchase ${name} (${price}). My FreeFire/PUBG UID is: _______. I will send Esewa payment screenshot.`;
+  whatsappBtn.href = `https://wa.me/9847956550?text=${encodeURIComponent(msg)}`;
+}
+
+// Attach click to all product cards (both grids)
+document.querySelectorAll('.product-card').forEach(card => {
+  card.addEventListener('click', (e) => {
+    const img = card.querySelector('.product-img img').src;
+    const name = card.querySelector('.product-info h3').innerText;
+    const priceText = card.querySelector('.price').innerText;
+    const productId = card.dataset.productId;
+    openModal(productId, img, name, priceText);
+  });
+});
+
+// Close modal
+document.querySelector('.modal-close')?.addEventListener('click', () => modal.style.display = 'none');
+window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+</script>

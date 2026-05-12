@@ -1,0 +1,70 @@
+Folder PATH listing for volume Acer
+Volume serial number is B2CD-3A0F
+C:\XAMPP\HTDOCS\DMC
+¦   contact.php
+¦   database.sql
+¦   home.p.txt
+¦   home.php
+¦   imp.txt
+¦   mobiles.php
+¦   parts.php
+¦   product_modal.php
+¦   project_structure.txt
+¦   README.md
+¦   topups.php
+¦   vapes.php
+¦   
++---assets
+¦   +---css
+¦   ¦       admin.css
+¦   ¦       header_footer.css
+¦   ¦       home.css
+¦   ¦       responsive.css
+¦   ¦       
+¦   +---images
+¦   ¦   ¦   esewa_icon.png
+¦   ¦   ¦   esewa_qr.png
+¦   ¦   ¦   esewa_qr_2.png
+¦   ¦   ¦   placeholder.png.svg
+¦   ¦   ¦   qr.jpeg
+¦   ¦   ¦   
+¦   ¦   +---browse_products
+¦   ¦   ¦       browse_mobile.png
+¦   ¦   ¦       browse_parts.png
+¦   ¦   ¦       browse_topup.png
+¦   ¦   ¦       browse_vape.png
+¦   ¦   ¦       why_best_price.png
+¦   ¦   ¦       why_flash.png
+¦   ¦   ¦       why_genuine_parts.png
+¦   ¦   ¦       why_trusted_since.png
+¦   ¦   ¦       
+¦   ¦   +---topup
+¦   ¦   ¦       ff_topup.png
+¦   ¦   ¦       ff_topup_og.png
+¦   ¦   ¦       pubg_topup.png
+¦   ¦   ¦       pubg_topup_og.png
+¦   ¦   ¦       resized-images.zip
+¦   ¦   ¦       
+¦   ¦   +---Why section
+¦   ¦           why_best_price.png
+¦   ¦           why_flash.png
+¦   ¦           why_genuien_parts.png
+¦   ¦           why_trusted_since.png
+¦   ¦           
+¦   +---js
+¦           main.js
+¦           modal.js
+¦           search.js
+¦           theme.js
+¦           topup.js
+¦           
++---includes
+¦       category_page.php
+¦       db.php
+¦       footer.php
+¦       functions.php
+¦       header.php
+¦       
++---uploads
+        .gitkeep
+        
