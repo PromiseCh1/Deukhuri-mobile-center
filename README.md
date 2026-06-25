@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Deukhuri Mobile & Computer Repairing Center — Frontend (PHP)
 
 > These PHP files are static project files. They do **not** run in the Lovable preview.
@@ -31,3 +32,7 @@ Ask for the admin panel next and I'll generate those files.
 - `includes/footer.php` → WhatsApp link number
 - `contact.php` → phone, email, Google Maps embed URL
 - `includes/db.php` → DB credentials if needed
+=======
+# Deukhuri-mobile-center
+DMC
+>>>>>>> 29ad6c2aca2c868acd95db9fbee3ab8a06167958
