@@ -9,18 +9,27 @@ $current = basename($_SERVER['PHP_SELF']);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Deukhuri Mobile &amp; Computer Repairing Center</title>
-  <!-- Global styles -->
+
+  <!-- Design System & Components -->
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/components/buttons.css">
+  <link rel="stylesheet" href="assets/css/components/cards.css">
+  <link rel="stylesheet" href="assets/css/components/modal.css">
+
+  <!-- Layout & Utilities -->
   <link rel="stylesheet" href="assets/css/header_footer.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+
   <!-- Page-specific CSS (if defined) -->
   <?php if (isset($page_css) && !empty($page_css)): ?>
     <link rel="stylesheet" href="assets/css/<?= htmlspecialchars($page_css) ?>">
   <?php endif; ?>
-  <!-- Font Awesome -->
+
+  <!-- Font Awesome & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <!-- JavaScript -->
+
+  <!-- JavaScript (defer) -->
   <script src="assets/js/theme.js" defer></script>
   <script src="assets/js/main.js" defer></script>
   <script src="assets/js/search.js" defer></script>
@@ -47,6 +56,7 @@ $current = basename($_SERVER['PHP_SELF']);
       <div class="header-actions">
         <input type="text" id="search-desktop" class="search-input" placeholder="Search products..." aria-label="Search">
         <button id="hamburger" class="icon-btn hamburger" aria-label="Menu">☰</button>
+        <button id="theme-toggle" class="icon-btn" aria-label="Switch theme">🌙</button>
       </div>
     </div>
     <div class="mobile-search">

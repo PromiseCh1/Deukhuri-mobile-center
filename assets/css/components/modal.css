@@ -1,0 +1,336 @@
+/* ============================================
+   modal.css – Product Modal (refined)
+   ============================================ */
+
+/* ----- Overlay ----- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  z-index: var(--z-modal, 10000);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md, 1rem);
+}
+
+/* ----- Modal Container ----- */
+.modal-container {
+  max-width: 680px;  /* Slightly narrower for better readability */
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--color-bg, #ffffff);
+  border-radius: var(--radius-xl, 1.5rem);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ----- Close Button ----- */
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--color-surface, #f8fafc);
+  border: 1px solid var(--color-border, #e2e8f0);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast, 0.15s ease);
+  z-index: 10;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.04));
+  color: var(--color-text, #1e293b);
+}
+.modal-close:hover {
+  background: var(--color-accent, #2563eb);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* ----- Modal Content ----- */
+.modal-content {
+  padding: 2rem 2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+/* ---- Product Row (image + title/price) ---- */
+.modal-row {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  padding-bottom: 1.2rem;
+  margin-bottom: 0.2rem;
+}
+.modal-image {
+  flex: 0 0 100px;
+}
+@media (min-width: 480px) {
+  .modal-image {
+    flex: 0 0 120px;
+  }
+}
+.modal-image img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: var(--radius-md, 1rem);
+  background: var(--color-surface, #f8fafc);
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.04));
+}
+.modal-header-text {
+  flex: 1;
+}
+.modal-header-text h2 {
+  font-family: var(--font-family, 'Inter', system-ui, sans-serif);
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold, 700);
+  margin: 0 0 0.25rem 0;
+  color: var(--color-text, #1e293b);
+  line-height: 1.2;
+}
+.modal-price {
+  font-family: var(--font-family, 'Inter', system-ui, sans-serif);
+  font-size: 1.4rem;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--color-primary, #000000);
+  margin: 0;
+}
+body.dark-mode .modal-price {
+  color: var(--color-text, #edf2f7);
+}
+
+/* ---- Payment Steps (card style) ---- */
+.payment-steps {
+  background: var(--color-surface, #f8fafc);
+  border-radius: var(--radius-md, 1rem);
+  padding: 1.2rem 1.5rem;
+  border: 1px solid var(--color-border, #e2e8f0);
+}
+.payment-steps h3 {
+  font-family: var(--font-family, 'Inter', system-ui, sans-serif);
+  font-size: 1.05rem;
+  font-weight: var(--font-weight-semibold, 600);
+  margin: 0 0 0.8rem 0;
+  color: var(--color-text, #1e293b);
+}
+.payment-steps ol {
+  margin: 0;
+  padding-left: 1.4rem;
+}
+.payment-steps li {
+  font-family: var(--font-family, 'Inter', system-ui, sans-serif);
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
+  color: var(--color-text-muted, #475569);
+  line-height: 1.5;
+}
+.payment-steps li strong {
+  color: var(--color-text, #1e293b);
+}
+
+/* ---- Esewa Box (card with QR & details) ---- */
+.esewa-box {
+  background: var(--color-surface, #f8fafc);
+  border-radius: var(--radius-md, 1rem);
+  padding: 1.2rem 1.2rem 1rem;
+  text-align: center;
+  border: 1px solid var(--color-border, #e2e8f0);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.qr-placeholder {
+  flex: 0 0 auto;
+}
+.qr-placeholder img {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: var(--radius-md, 1rem);
+  border: 2px solid var(--color-border, #e2e8f0);
+  background: #fff;
+}
+.esewa-details {
+  text-align: left;
+}
+.esewa-details p {
+  margin: 0.4rem 0;
+  font-family: var(--font-family, 'Inter', system-ui, sans-serif);
+  font-size: 0.95rem;
+  color: var(--color-text, #1e293b);
+}
+.esewa-details i {
+  width: 24px;
+  color: var(--color-primary, #000000);
+}
+.esewa-details strong {
+  font-weight: var(--font-weight-semibold, 600);
+}
+.copy-esewa-btn {
+  background: var(--color-bg, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius-full, 9999px);
+  padding: 0.25rem 0.8rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: all var(--transition-fast, 0.15s ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--color-text, #1e293b);
+}
+.copy-esewa-btn i {
+  font-size: 0.8rem;
+  width: auto;
+}
+.copy-esewa-btn:hover {
+  background: var(--color-accent, #2563eb);
+  color: #fff;
+  border-color: var(--color-accent, #2563eb);
+}
+.copy-esewa-btn:hover i {
+  color: #fff;
+}
+
+/* ---- WhatsApp Button ---- */
+.btn-whatsapp-modal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: var(--color-whatsapp, #25D366);
+  color: #fff;
+  padding: 0.65rem 1.8rem;
+  border-radius: var(--radius-full, 9999px);
+  font-family: var(--font-family, 'Inter', system-ui, sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all var(--transition-base, 0.25s ease);
+  border: none;
+  cursor: pointer;
+  margin: 0.5rem auto 0;
+  width: auto;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.04));
+}
+.btn-whatsapp-modal:hover {
+  background: var(--color-whatsapp-hover, #128C7E);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.06));
+}
+.btn-whatsapp-modal i {
+  font-size: 1.2rem;
+}
+
+/* ---- Warning Note ---- */
+.warning-note {
+  background: var(--color-warning-bg, #fff3e0);
+  border-left: 4px solid var(--color-warning-border, #f59e0b);
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-sm, 0.5rem);
+  font-size: 0.75rem;
+  color: var(--color-warning-text, #92400e);
+  margin-top: 0.4rem;
+  text-align: left;
+}
+body.dark-mode .warning-note {
+  background: var(--color-warning-bg, #2d2a1e);
+  color: var(--color-warning-text, #fcd34d);
+  border-left-color: var(--color-warning-border, #f59e0b);
+}
+
+/* ---- Toast Notification (copy feedback) ---- */
+/* ---- Toast Notification (copy feedback) ---- */
+.toast-notification {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b; /* Fixed dark background – visible in both modes */
+  color: #ffffff;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius-full, 9999px);
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-medium, 500);
+  font-family: var(--font-family, 'Inter', system-ui, sans-serif);
+  z-index: var(--z-toast, 10001);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: fadeInOut 2s ease forwards;
+  pointer-events: none;
+  white-space: nowrap;
+}
+@keyframes fadeInOut {
+  0% { opacity: 0; bottom: 20px; }
+  10% { opacity: 1; bottom: 30px; }
+  90% { opacity: 1; bottom: 30px; }
+  100% { opacity: 0; bottom: 20px; visibility: hidden; }
+}
+/* ---- Mobile adjustments for modal ---- */
+@media (max-width: 550px) {
+  .modal-content {
+    padding: 1.2rem 1.2rem 1.2rem;
+    gap: 1.2rem;
+  }
+  .modal-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.8rem;
+    padding-bottom: 0.8rem;
+  }
+  .modal-image {
+    flex: 0 0 auto;
+    width: 100px;
+    margin: 0 auto;
+  }
+  .modal-header-text {
+    text-align: center;
+  }
+  .modal-header-text h2 {
+    font-size: 1.2rem;
+  }
+  .qr-placeholder img {
+    width: 100px;
+    height: 100px;
+  }
+  .esewa-box {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .esewa-details {
+    text-align: center;
+  }
+  .btn-whatsapp-modal {
+    width: 100%;
+    justify-content: center;
+  }
+}
