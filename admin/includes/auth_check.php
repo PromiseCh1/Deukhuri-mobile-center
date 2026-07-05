@@ -1,146 +1,174 @@
 <?php
+declare(strict_types=1);
+
 /**
  * auth_check.php
- * Authentication and session validation for every admin page.
+ * Authentication middleware for every admin page.
  *
- * Include this file at the top of every admin page to:
- * - Start the session securely.
- * - Verify the user is logged in.
- * - Enforce session timeout.
- * - Optionally check for required role (Admin or Staff).
+ * This file:
+ * 1. Configures the session securely.
+ * 2. Checks for session timeout.
+ * 3. Periodically regenerates the session ID.
+ * 4. Ensures the user is logged in.
+ * 5. Provides helpers for role-based access.
  */
 
-// Ensure this file is only accessed via the bootstrap
+// ---------------------------------------------------------------------------
+// Security – Prevent direct access
+// ---------------------------------------------------------------------------
 if (!defined('APP_START')) {
     header('HTTP/1.1 403 Forbidden');
     exit('Direct access not allowed.');
 }
 
-// Load required core files
+// Load core files
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/functions.php';
 
-// ---------------------------------------------------------------------------
-// Session Security
-// ---------------------------------------------------------------------------
+// ===========================================================================
+// 1. SESSION CONFIGURATION
+// ===========================================================================
 
-// Set session name
 session_name(SESSION_NAME);
+session_set_cookie_params([
+    'lifetime' => SESSION_TIMEOUT,
+    'path'     => SESSION_COOKIE_PATH ?: '/',
+    'domain'   => SESSION_COOKIE_DOMAIN ?: '',
+    'secure'   => isHttps(),   // Auto-set if HTTPS
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 
-// Configure session cookie parameters for security (only when on HTTPS in production)
-if (APP_ENV === 'production') {
-    session_set_cookie_params([
-        'lifetime' => SESSION_TIMEOUT,
-        'path'     => '/',
-        'domain'   => '',
-        'secure'   => true,   // only send over HTTPS
-        'httponly' => true,
-        'samesite' => 'Lax'
-    ]);
-} else {
-    // Development: allow HTTP, but still enforce httponly
-    session_set_cookie_params([
-        'lifetime' => SESSION_TIMEOUT,
-        'path'     => '/',
-        'domain'   => '',
-        'secure'   => false,
-        'httponly' => true,
-        'samesite' => 'Lax'
-    ]);
-}
-
-// Start or resume session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ---------------------------------------------------------------------------
-// Session Timeout Check
-// ---------------------------------------------------------------------------
+// ===========================================================================
+// 2. SESSION TIMEOUT CHECK
+// ===========================================================================
 
 if (isset($_SESSION['last_activity'])) {
-    $inactive_time = time() - $_SESSION['last_activity'];
-    if ($inactive_time > SESSION_TIMEOUT) {
-        // Session expired: destroy and redirect
+    if (time() - $_SESSION['last_activity'] > SESSION_TIMEOUT) {
+        // Session expired – preserve flash messages
+        $flash = $_SESSION['__flash'] ?? [];
         $_SESSION = [];
-        if (ini_get('session.use_cookies')) {
-            $params = session_get_cookie_params();
-            setcookie(
-                session_name(),
-                '',
-                time() - 42000,
-                $params['path'],
-                $params['domain'],
-                $params['secure'],
-                $params['httponly']
-            );
-        }
-        session_destroy();
+        $_SESSION['__flash'] = $flash;
+
         setFlashMessage('error', 'Your session has expired. Please log in again.');
-        redirect(SITE_URL . '/admin/login.php');
-        exit;
+        redirect(ADMIN_URL . '/login.php');
     }
 }
-
-// Update last activity time
 $_SESSION['last_activity'] = time();
 
-// Regenerate session ID periodically (optional, but adds security)
+// ===========================================================================
+// 3. SESSION REGENERATION (Periodic)
+// ===========================================================================
+
 if (!isset($_SESSION['created'])) {
     $_SESSION['created'] = time();
-} elseif (time() - $_SESSION['created'] > 1800) {
-    // Regenerate every 30 minutes
+} elseif (time() - $_SESSION['created'] > 1800) { // Every 30 minutes
     session_regenerate_id(true);
     $_SESSION['created'] = time();
 }
 
-// ---------------------------------------------------------------------------
-// Authentication Check
-// ---------------------------------------------------------------------------
+// ===========================================================================
+// 4. AUTHENTICATION CHECK
+// ===========================================================================
 
-// If not logged in, redirect to login page
 if (!isLoggedIn()) {
     setFlashMessage('error', 'Please log in to access the admin panel.');
-    redirect(SITE_URL . '/admin/login.php');
-    exit;
+    redirect(ADMIN_URL . '/login.php');
 }
 
-// ---------------------------------------------------------------------------
-// Role-Based Access Control (optional)
-// ---------------------------------------------------------------------------
+// ===========================================================================
+// 5. REUSABLE ROLE HELPERS (for future pages)
+// ===========================================================================
 
 /**
- * Check for a required role.
- * Usage: auth_check('Admin') or auth_check('Staff')
- *
- * @param string $required_role The role required to view the page.
- * @return void Redirects if user doesn't have the required role.
+ * Ensure the user is logged in. If not, redirect to login.
+ * This is a simple alias to the core check.
  */
-function requireRole($required_role)
+/**
+ * Combined authentication and optional role check.
+ * Call this after including the file.
+ */
+function authenticate(string|array|null $requiredRole = null, string $redirectUrl = ''): void
 {
+    // Already checked above, but re‑check for safety.
     if (!isLoggedIn()) {
         setFlashMessage('error', 'Please log in.');
-        redirect(SITE_URL . '/admin/login.php');
-        exit;
+        redirect(ADMIN_URL . '/login.php');
     }
 
-    $user_role = $_SESSION['role'] ?? '';
-    $allowed = false;
-
-    if ($required_role === 'Admin') {
-        $allowed = ($user_role === 'Admin');
-    } elseif ($required_role === 'Staff') {
-        $allowed = ($user_role === 'Staff' || $user_role === 'Admin');
-    }
-
-    if (!$allowed) {
-        setFlashMessage('error', 'You do not have permission to access this page.');
-        redirect(SITE_URL . '/admin/dashboard.php'); // Redirect to dashboard or login
-        exit;
+    if ($requiredRole !== null) {
+        requireRole($requiredRole, $redirectUrl);
     }
 }
 
-// ---------------------------------------------------------------------------
-// End of auth_check.php
-// ---------------------------------------------------------------------------
+function requireLogin(): void
+{
+    if (!isLoggedIn()) {
+        setFlashMessage('error', 'Please log in to access this page.');
+        redirect(ADMIN_URL . '/login.php');
+    }
+}
+
+/**
+ * Ensure the logged-in user has a specific role.
+ *
+ * @param string $requiredRole The role required ('Admin' or 'Staff').
+ * @param string $redirectUrl  Optional custom redirect URL.
+ */
+function requireRole(string $requiredRole, string $redirectUrl = ''): void
+{
+    requireLogin(); // Ensure user is logged in first
+
+    $userRole = $_SESSION['role'] ?? '';
+
+    // Admin has universal access
+    if ($userRole === 'Admin') {
+        return;
+    }
+
+    if ($userRole !== $requiredRole) {
+        setFlashMessage('error', 'You do not have permission to access this page.');
+        $redirectUrl = $redirectUrl ?: ADMIN_URL . '/dashboard.php';
+        redirect($redirectUrl);
+    }
+}
+
+/**
+ * Ensure the logged-in user has any one of the allowed roles.
+ *
+ * @param array  $allowedRoles Array of allowed roles (e.g., ['Admin', 'Manager']).
+ * @param string $redirectUrl  Optional custom redirect URL.
+ */
+function requireAnyRole(array $allowedRoles, string $redirectUrl = ''): void
+{
+    requireLogin(); // Ensure user is logged in first
+
+    $userRole = $_SESSION['role'] ?? '';
+
+    // Admin has universal access
+    if ($userRole === 'Admin') {
+        return;
+    }
+
+    if (!in_array($userRole, $allowedRoles, true)) {
+        setFlashMessage('error', 'You do not have permission to access this page.');
+        $redirectUrl = $redirectUrl ?: ADMIN_URL . '/dashboard.php';
+        redirect($redirectUrl);
+    }
+}
+
+// ===========================================================================
+// 6. (Optional) Automatic role check if page defines REQUIRE_ROLE
+// ===========================================================================
+if (defined('REQUIRE_ROLE')) {
+    if (is_string(REQUIRE_ROLE)) {
+        requireRole(REQUIRE_ROLE);
+    } elseif (is_array(REQUIRE_ROLE)) {
+        requireAnyRole(REQUIRE_ROLE);
+    }
+}

@@ -1,0 +1,144 @@
+/* login.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #F5F7FA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-box {
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    padding: 2.5rem 2rem 2rem;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.login-header p {
+    color: #6B7280;
+    font-size: 0.9rem;
+}
+
+.login-alert {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+}
+.login-alert.error {
+    background: #FEE2E2;
+    color: #991B1B;
+    border-left: 4px solid #EF4444;
+}
+.login-alert.success {
+    background: #D1FAE5;
+    color: #065F46;
+    border-left: 4px solid #22C55E;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #111827;
+    margin-bottom: 0.3rem;
+}
+
+.form-group label i {
+    width: 20px;
+    color: #6B7280;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border 0.15s;
+    background: #F9FAFB;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    background: #FFFFFF;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.remember-me input {
+    width: auto;
+}
+
+.remember-me label {
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: #6B7280;
+    margin-bottom: 0;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 0.7rem;
+    background: #2563EB;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-login:hover {
+    background: #1D4ED8;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: #9CA3AF;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .login-box {
+        padding: 1.5rem;
+    }
+}
