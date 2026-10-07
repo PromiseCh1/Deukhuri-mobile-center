@@ -1,0 +1,118 @@
+/* ============================================
+   quick-view.css — Product quick view modal
+   ============================================ */
+
+.qv-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+.qv-modal[hidden] { display: none; }
+
+.qv-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(2px);
+  animation: qvFade 160ms ease-out;
+}
+
+.qv-panel {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25);
+  overflow: hidden;
+  animation: qvPop 200ms ease-out;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+.qv-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.qv-close:hover { background: var(--color-surface); border-color: var(--color-border-strong); }
+
+.qv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.qv-image {
+  background: var(--color-surface-2);
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+.qv-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qv-details {
+  padding: 1.75rem 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.qv-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.3;
+}
+.qv-price {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-text);
+}
+.qv-desc {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  margin: 0.25rem 0 0;
+}
+.qv-specs {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+.qv-specs ul { list-style: none; padding: 0; margin: 0; }
+.qv-specs li { padding: 0.25rem 0; border-bottom: 1px dashed var(--color-border); }
+.qv-specs li:last-child { border-bottom: 0; }
+.qv-specs strong { color: var(--color-text); font-weight: 500; }
+
+.qv-wa { margin-top: auto; align-self: flex-start; }
+
+@keyframes qvFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes qvPop {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 700px) {
+  .qv-grid { grid-template-columns: 1fr; }
+  .qv-image { aspect-ratio: 4 / 3; }
+  .qv-details { padding: 1.25rem 1.15rem 1.25rem; }
+  .qv-close { top: 0.5rem; right: 0.5rem; }
+}

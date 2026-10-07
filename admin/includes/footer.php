@@ -12,6 +12,17 @@ if (!defined('APP_START')) {
     </div> <!-- .admin-main -->
 </div> <!-- .admin-wrapper -->
 
+<!-- Footer -->
+<footer class="admin-footer">
+    <div class="footer-left">
+        &copy; <?= date('Y') ?> <?= SITE_NAME ?> – All rights reserved.
+    </div>
+    <div class="footer-right">
+        Version <?= APP_VERSION ?>
+    </div>
+</footer>
+
+<!-- JavaScript -->
 <script src="<?= ADMIN_URL ?>/assets/js/admin.js"></script>
 <?php if (isset($page_js) && !empty($page_js)): ?>
     <script src="<?= ADMIN_URL ?>/assets/js/<?= htmlspecialchars($page_js) ?>"></script>

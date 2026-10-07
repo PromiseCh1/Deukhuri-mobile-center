@@ -54,6 +54,7 @@ define('DB_PASS', '');
 define('UPLOAD_PATH', __DIR__ . '/../../uploads/');
 define('UPLOAD_PRODUCTS', UPLOAD_PATH . 'products/');
 define('UPLOAD_CATEGORIES', UPLOAD_PATH . 'categories/');
+define('UPLOAD_URL', SITE_URL . '/uploads/'); // optional if not defined
 define('UPLOAD_BRANDS', UPLOAD_PATH . 'brands/');
 
 // Create directories only in development (or if they don't exist)

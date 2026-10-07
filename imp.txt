@@ -1,1 +1,0 @@
- tree "C:\xampp\htdocs\dmc" /f > project_structure.txt
